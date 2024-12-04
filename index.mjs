@@ -1,33 +1,31 @@
+console.log("i have been udpated");
+import db from "./db/conn.mjs";
 import express from "express";
-import { connectDB } from "./db/conn.mjs"; // Correct path to conn.mjs
 import dotenv from "dotenv";
-
-dotenv.config(); // Load environment variables from.env file
-
-const PORT = 5050;
-const app = express();
-
+dotenv.config();
+// in order to use the grades.mjs for my routes,
+// i need to import the file
+// then i need to use those grades routes for anything matching /api/grades
 import grades from "./routes/grades.mjs";
-import grades_agg from "./routes/grades_agg.mjs";
-
+// process.env is what allows me to access the .env
+// PORT is what it was called in the .env file
+const PORT = process.env.PORT || 5050;
+const app = express();
+// middleware
 app.use(express.json());
-
+// routes
+// generic route that is the root of the application
 app.get("/", (req, res) => {
-  res.send("Welcome to the API.");
+  res.send(
+    "Welcome to the API.  Documentation could go here, or you could redirect to documentation"
+  );
 });
-
-app.use("/grades", grades);
-app.use("/grades", grades_agg);
-
-// Connect to MongoDB
-await connectDB(); // Ensure MongoDB is connected before starting the server
-
-// Global error handling
+app.use("/api/grades", grades);
+// Global error handling after the routes
 app.use((err, _req, res, next) => {
-  res.status(500).send("Seems like we messed up somewhere...");
+  res.status(500).send("seems like we messed up somewhere");
 });
-
-// Start the Express server
+// start the express application
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
