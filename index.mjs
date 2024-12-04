@@ -1,4 +1,8 @@
 import express from "express";
+import { connectDB } from "./db/conn.mjs"; // Correct path to conn.mjs
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables from.env file
 
 const PORT = 5050;
 const app = express();
@@ -14,6 +18,9 @@ app.get("/", (req, res) => {
 
 app.use("/grades", grades);
 app.use("/grades", grades_agg);
+
+// Connect to MongoDB
+await connectDB(); // Ensure MongoDB is connected before starting the server
 
 // Global error handling
 app.use((err, _req, res, next) => {
